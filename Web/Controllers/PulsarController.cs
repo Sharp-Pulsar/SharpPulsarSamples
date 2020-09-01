@@ -20,6 +20,9 @@ using System.Collections.Immutable;
 using System.Text.Json;
 using System.Threading.Tasks;
 
+//https://appdevmusings.com/asp-net-core-2-1-web-api-load-app-configuration-from-appsettings-json-dockerfile-environment-variables-azure-key-vault-secrets-and-kubernetes-configmaps-secrets
+//https://medium.com/@fbeltrao/automatically-reload-configuration-changes-based-on-kubernetes-config-maps-in-a-net-d956f8c8399a
+//https://appdevmusings.com/azure-kubernetes-service-aks-deploying-angular-asp-net-core-and-sql-server-on-linux
 namespace Web.Controllers
 {
     [Route("api")]
