@@ -1,4 +1,5 @@
 import { Component } from '@angular/core';
+import { ToastrModule } from 'ngx-toastr/toastr/toastr.module';
 
 @Component({
   selector: 'app-root',

@@ -64,13 +64,13 @@ namespace WorkerService
                     if(message != null)
                     {
                         var echo = message.Message.ToTypeOf<Echo.Common.Echo>();
-                        await _echo.Clients.All.SendAsync("Echo", JsonSerializer.Serialize(echo, new JsonSerializerOptions { WriteIndented = true }));
+                        await _echo.Clients.All.SendAsync("echo", JsonSerializer.Serialize(echo, new JsonSerializerOptions { WriteIndented = true }));
                         _pulsarSystem.Acknowledge(message);
                     }
                 }
                 catch(Exception ex)
                 {
-                    await _echo.Clients.All.SendAsync("Error", ex.ToString());
+                    await _echo.Clients.All.SendAsync("error", ex.ToString());
                 }
                 await Task.Delay(1000, stoppingToken);
             }
