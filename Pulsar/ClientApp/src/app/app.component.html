@@ -1,6 +1,14 @@
-<body>
-  <app-nav-menu></app-nav-menu>
-  <div class="container">
+<!--The content below is only a placeholder and can be replaced.-->
+
+<div class="container-fluid h-100 w-100">
+
+  <div class="column justify-content-center w-100">
+  </div>
+  <div class="row justify-content-center w-100" style="margin-bottom:20px;">
+    <div style="margin-right:50px;"><a [routerLink]="'/echo'" routerLinkActive="active">Echo</a></div>
+  </div>
+  <div class="container-fluid h-100 w-100">
     <router-outlet></router-outlet>
   </div>
-</body>
+  <div style="margin-top:20px;"></div>
+</div>
