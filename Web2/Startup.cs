@@ -1,14 +1,11 @@
-using Echo.Common;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.HttpsPolicy;
 using Microsoft.AspNetCore.SpaServices.AngularCli;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using System;
 
-namespace Web
+namespace Web2
 {
     public class Startup
     {
@@ -22,13 +19,11 @@ namespace Web
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            PulsarSettings options = Configuration.GetSection("Pulsar").Get<PulsarSettings>();
-            services.AddSingleton(options);
             services.AddControllersWithViews();
             // In production, the Angular files will be served from this directory
             services.AddSpaStaticFiles(configuration =>
             {
-                configuration.RootPath = "pulsar/dist";
+                configuration.RootPath = "ClientApp/dist";
             });
         }
 
@@ -42,11 +37,8 @@ namespace Web
             else
             {
                 app.UseExceptionHandler("/Error");
-                // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
-                app.UseHsts();
             }
 
-            app.UseHttpsRedirection();
             app.UseStaticFiles();
             if (!env.IsDevelopment())
             {
@@ -67,7 +59,8 @@ namespace Web
                 // To learn more about options for serving an Angular SPA from ASP.NET Core,
                 // see https://go.microsoft.com/fwlink/?linkid=864501
 
-                spa.Options.SourcePath = "pulsar";
+                spa.Options.SourcePath = "ClientApp";
+
                 if (env.IsDevelopment())
                 {
                     spa.UseAngularCliServer(npmScript: "start");
