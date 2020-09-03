@@ -20,15 +20,12 @@ namespace WorkerService
         }
         public void ConfigureServices(IServiceCollection services)
         {
+            
             var configuration = Configuration;
             PulsarSettings options = configuration.GetSection("Pulsar").Get<PulsarSettings>();
             services.AddSingleton(options);
             services.AddSignalR((o) => {
                 o.EnableDetailedErrors = true;
-                o.SupportedProtocols = new List<string>
-                        {
-                            "WebSockets", "ServerSentEvents"
-                        };
             });
             services.AddHostedService<Worker>();
         }
@@ -41,6 +38,7 @@ namespace WorkerService
             }
 
             app.UseRouting();
+            app.UseCorsMiddleware();
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapHub<EchoHub>("/hubs/echo");

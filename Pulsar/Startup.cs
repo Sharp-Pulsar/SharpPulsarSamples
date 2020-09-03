@@ -1,3 +1,4 @@
+using Echo.Common;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.SpaServices.AngularCli;
@@ -19,6 +20,16 @@ namespace Pulsar
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            PulsarSettings options = Configuration.GetSection("Pulsar").Get<PulsarSettings>();
+            services.AddSingleton(options);
+            services.AddCors(options => options.AddPolicy("CorsPolicy",
+            builder =>
+            {
+                builder.AllowAnyHeader()
+                       .AllowAnyMethod()
+                       .SetIsOriginAllowed((host) => true)
+                       .AllowCredentials();
+            }));
             services.AddControllersWithViews();
             // In production, the Angular files will be served from this directory
             services.AddSpaStaticFiles(configuration =>
@@ -30,6 +41,7 @@ namespace Pulsar
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
+            app.UseCors("CorsPolicy");
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
