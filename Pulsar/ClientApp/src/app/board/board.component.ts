@@ -52,6 +52,6 @@ export class BoardComponent implements OnInit, OnDestroy {
   public Submit() {
     var data = { Id: uuid(), Text: this.echoText };
     this.echoText = '';
-    this.boardService.submitData(JSON.stringify(data)).subscribe(d => this.response.push(d));
+    this.boardService.submitData(JSON.stringify(data)).subscribe(d => this.response.push(JSON.stringify(d)));
   }
 }
