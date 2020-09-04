@@ -2,17 +2,17 @@
   <div class="row">
     <div class="col-xs-4">
       <form>
-        <textarea style="width:200px" class="form-control" [(ngModel)]="echoText" name="echoText" placeholder="Let's echo your mind...here!" rows="3"></textarea>
+        <textarea style="width:400px" class="form-control" [(ngModel)]="echoText" name="echoText" placeholder="Let's echo your mind...here!" rows="3"></textarea>
         <button style="margin-top:20px;" (click)="Submit()" class="btn btn-primary">Send</button>
 
-        <div style="margin-top: 20px;overflow: scroll;">
+        <div style="margin-top:20px; width:400px; height:300px; overflow: scroll;">
           <div *ngFor="let resp of response">
             <span>{{resp}}</span>
           </div>
         </div>
       </form>
     </div>
-    <div style="margin-left: 100px;overflow: scroll;" class="col-xs-6" >
+    <div style="margin-left: 200px; width: 400px; overflow: scroll;" class="col-xs-6" >
       <div *ngFor="let ech of echo">
         <span>{{ech}}</span>
       </div>

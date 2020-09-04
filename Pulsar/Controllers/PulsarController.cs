@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Nito.AsyncEx;
+using Pulsar;
 using SharpPulsar.Akka;
 using SharpPulsar.Akka.Configuration;
 using SharpPulsar.Akka.InternalCommands;
@@ -29,29 +30,8 @@ namespace Web.Controllers
     [ApiController]
     public class PulsarController : ControllerBase
     {
-        private readonly PulsarSystem _pulsarSystem;
-        private IActorRef _producer;
-        private IConfiguration _configuration; 
-        private string _contentRoot;
-        private AvroSchema _schema;
-        private PulsarSettings _pulsarSettings;
-        public PulsarController(PulsarSettings pulsarSettings, IWebHostEnvironment env)
+        public PulsarController()
         {
-            _pulsarSettings = pulsarSettings;
-            _contentRoot = env.ContentRootPath;
-            var clientConfig = new PulsarClientConfigBuilder()
-                .ServiceUrl(pulsarSettings.ServiceUrl)
-                .ConnectionsPerBroker(1)
-                .UseProxy(pulsarSettings.UseProxy)
-                .OperationTimeout(pulsarSettings.OperationTimeout)
-                .AllowTlsInsecureConnection(false)
-                .ProxyServiceUrl(pulsarSettings.ProxyServiceUrl, ProxyProtocol.SNI)
-                .Authentication(new AuthenticationDisabled())
-                .ClientConfigurationData;
-
-            _pulsarSystem = PulsarSystem.GetInstance(clientConfig);
-            _schema = AvroSchema.Of(typeof(Echo.Common.Echo));
-            _producer = Producer();
         }
         [Route("submit")]
         [HttpPost]
@@ -72,7 +52,7 @@ namespace Web.Controllers
                 };
                 var send = new Send(echo, metadata.ToImmutableDictionary());
                 var receipt = await Task.Factory.Run(() => {
-                    return _pulsarSystem.Send(send, _producer);
+                    return HostService.PulsarConnector.Send(send);
                 });
                 return JsonSerializer.Serialize(receipt, new JsonSerializerOptions { WriteIndented = true });
             }
@@ -81,26 +61,6 @@ namespace Web.Controllers
                 return $"Failed with message:'{e.Message}'";
 
             }
-        }
-        private IActorRef Producer()
-        {
-            var topic = _pulsarSettings.Topic;
-            var producerListener = new DefaultProducerListener((o) =>
-            {
-                
-            }, s =>
-            {
-                
-            });
-            var producerConfig = new ProducerConfigBuilder()
-                .ProducerName($"Web-{topic}-{Guid.NewGuid()}")
-                .Topic(topic)
-                .Schema(_schema)
-                .EnableChunking(true)
-                .EventListener(producerListener)
-                .ProducerConfigurationData;
-
-            return _pulsarSystem.PulsarProducer(new CreateProducer(_schema, producerConfig)).Producer;
         }
     }
 }

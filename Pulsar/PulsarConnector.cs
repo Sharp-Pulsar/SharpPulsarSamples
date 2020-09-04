@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using SharpPulsar.Akka;
 using SharpPulsar.Akka.Configuration;
+using SharpPulsar.Akka.InternalCommands;
 using SharpPulsar.Akka.InternalCommands.Producer;
 using SharpPulsar.Akka.Network;
 using SharpPulsar.Api;
@@ -16,29 +17,39 @@ namespace Pulsar
 {
     public class PulsarConnector
     {
-        public PulsarSystem PulsarSystem;
-        public IActorRef Producer;
-        private IConfiguration _configuration;
+        private PulsarSystem _pulsarSystem;
+        public static IActorRef _producer;
         private string _contentRoot;
         private AvroSchema _schema;
         private PulsarSettings _pulsarSettings;
-        public void Connect(PulsarSettings pulsarSettings, IWebHostEnvironment env)
+        public PulsarConnector(PulsarSettings pulsarSettings, IWebHostEnvironment env)
         {
             _pulsarSettings = pulsarSettings;
             _contentRoot = env.ContentRootPath;
+        }
+        public void Start()
+        {           
             var clientConfig = new PulsarClientConfigBuilder()
-                .ServiceUrl(pulsarSettings.ServiceUrl)
+                .ServiceUrl(_pulsarSettings.ServiceUrl)
                 .ConnectionsPerBroker(1)
-                .UseProxy(pulsarSettings.UseProxy)
-                .OperationTimeout(pulsarSettings.OperationTimeout)
+                .UseProxy(_pulsarSettings.UseProxy)
+                .OperationTimeout(_pulsarSettings.OperationTimeout)
                 .AllowTlsInsecureConnection(false)
-                .ProxyServiceUrl(pulsarSettings.ProxyServiceUrl, ProxyProtocol.SNI)
+                .ProxyServiceUrl(_pulsarSettings.ProxyServiceUrl, ProxyProtocol.SNI)
                 .Authentication(new AuthenticationDisabled())
                 .ClientConfigurationData;
 
-            PulsarSystem = PulsarSystem.GetInstance(clientConfig);
+            _pulsarSystem = PulsarSystem.GetInstance(clientConfig);
             _schema = AvroSchema.Of(typeof(Echo.Common.Echo));
-            Producer = CreateProducer();
+            _producer = CreateProducer();
+        }
+        public SentReceipt Send(Send send)
+        {
+            return _pulsarSystem.Send(send, _producer);
+        }
+        public  void Stop()
+        {
+            _pulsarSystem.Stop();
         }
         private IActorRef CreateProducer()
         {
@@ -58,7 +69,7 @@ namespace Pulsar
                 .EventListener(producerListener)
                 .ProducerConfigurationData;
 
-            return PulsarSystem.PulsarProducer(new CreateProducer(_schema, producerConfig)).Producer;
+            return _pulsarSystem.PulsarProducer(new CreateProducer(_schema, producerConfig)).Producer;
         }
     }
 }

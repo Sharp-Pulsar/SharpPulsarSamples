@@ -12,11 +12,8 @@ namespace Pulsar
 {
     public class Program
     {
-        public static PulsarConnector PulsarConnector = new PulsarConnector();
         public static void Main(string[] args)
         {
-            var dir = AppDomain.CurrentDomain.BaseDirectory;
-            File.WriteAllText(@"C:\Users\Technical\source\repos\SharpPulsarSamples\Pulsar\bin\Debug\netcoreapp3.1\dir.log", dir);
             CreateHostBuilder(args).Build().Run();
         }
 
