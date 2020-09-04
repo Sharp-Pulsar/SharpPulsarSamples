@@ -4,7 +4,9 @@ Demos various usage of [SharpPulsar](https://github.com/eaba/SharpPulsar)
 ## Preparations
 
 1 - Create Azure DNS Zone
+
 2 - Create Azure Kubernetes Service
+
 3 - Reset AKS Service Principal password:
 ```bash
 SP_ID=$(az aks show --resource-group <resource group> --name <AKS name> --query servicePrincipalProfile.clientId -o tsv)
