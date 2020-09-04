@@ -15,7 +15,7 @@ echo $SP_ID
 
 SP_SECRET=$(az ad sp credential reset --name $SP_ID --query password -o tsv)
 
-echo $SP_SECRET // copy cause it will be needed later.
+echo $SP_SECRET
 
 echo $SP_SECRET | openssl base64
 ```
@@ -57,11 +57,11 @@ azuredns:
       resourceGroupName: "[Azure Resource Group]"
 
 azure:
-      resource_group: pulsar
+      resource_group: "[Azure Resource Group]"
       tenant_id: tenant_id
       subscription_id: subscription_id
-      client_id: service_principal_id
-      client_secret: service_principal_secret
+      client_id: $SP_ID
+      client_secret: $SP_SECRET
 ```
 
 
