@@ -29,7 +29,9 @@ az aks get-credentials --resource-group <resource> --name <AKS cluster name>
 ```
 6 - Install Cert-Manager:
 ```bash
-kubectl apply --validate=false -f https://github.com/jetstack/cert-manager/releases/download/{version}/cert-manager.yaml
+# Kubernetes 1.16+
+$ kubectl apply --validate=false -f https://github.com/jetstack/cert-manager/releases/download/v1.0.1/cert-manager.yaml
+
 ```
 
 ## Deploy Pulsar on Azure
